@@ -1,19 +1,34 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Layout from "@components/Layout";
+
+import { defaultBags } from "@utils/constants"; // Bags to render
+import styles from '../styles/Home.module.scss'
 
 const Home: NextPage = () => {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Loot (for Adventurers) Registry</title>
-        <meta name="description" content="The original :oot (for Adventurers) registry. See" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
 
+  const quicklinks: Record<string, string>[] = [
+    { name: "OpenSea", url: "https://opensea.io/collection/lootproject" },
+    {
+      name: "Twitter",
+      url: "https://twitter.com/lootproject",
+    },
+    {
+      name: "Contract",
+      url: "https://etherscan.io/address/0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7",
+    },
+  ];
+
+  const getRandomThreeBags = () => {
+    const shuffled = defaultBags.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
+  };
+
+  return (
+    <Layout>
       <main className={styles.main}>
-        <h1 className={styles.title}>
+        <h1 className={styles.home_cta}>
           welcome to ~Loogle~ ;-)
         </h1>
 
@@ -22,50 +37,35 @@ const Home: NextPage = () => {
           <input placeholder="1"></input>
         </p>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        {/* Rendering sample loot bags */}
+        <div className={styles.home__feature}>
+          <span>Example Bags:</span>
+          {getRandomThreeBags().map(({ id, attributes }, i) => (
+            // For each loot bag, render item and link to OpenSea
+            <a
+              href={`https://opensea.io/assets/0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7/${id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={i}
+              className={styles.home__bag}
+            >
+              <div className={styles.home__bag_attributes}>
+                <span>#{id}</span>
+                <ul>
+                  {attributes.map((attribute, i) => (
+                    <li key={i}>
+                      <span>{attribute}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </a>
+          ))}
         </div>
-      </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+
+      </main>
+    </Layout>
   )
 }
 
